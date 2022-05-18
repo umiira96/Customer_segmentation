@@ -16,8 +16,8 @@ class ModelCreation():
     def layers(self):
 
         model = Sequential()
-        model.add(Dense(128, activation='tanh', 
-                        input_shape=[100]))
+        model.add(Dense(128, activation='relu', 
+                        input_shape=[60,1]))
         model.add(Dropout(0.2))
         model.add(BatchNormalization())
         model.add(Dense(128))
@@ -26,10 +26,10 @@ class ModelCreation():
         model.add(Dense(1))
 
 class ModelEvaluation():
-    def report_metrics(self,y_true,y_pred):
-        print(classification_report(y_true,y_pred))
-        print(confusion_matrix(y_true,y_pred))
-        print(accuracy_score(y_true,y_pred))
+    def report_metrics(self,y_true,predicted):
+        print(classification_report(y_true,predicted))
+        print(confusion_matrix(y_true,predicted))
+        print(accuracy_score(y_true,predicted))
         #%%
         
 if __name__ == '__main__':

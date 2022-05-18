@@ -67,6 +67,7 @@ train_test['Profession']=train_test['Profession'].astype('str')
 
 le = LabelEncoder()
 train_test['Profession_le']=le.fit_transform(train_test['Profession'])
+
 train_test.drop('Profession',axis=1,inplace=True)
 
 #Work_Experience
@@ -103,6 +104,7 @@ X_test = df[X_test]
 
 X_train['Segmentation'] = le.fit_transform(X_train['Segmentation'])
 
+
 #%%
 
 X_train = X_train.iloc[: , 1:]
@@ -116,15 +118,15 @@ x_test_scaled = mms.transform(X_test)
 x_train = []
 y_train = []
 
-for i in range(100,len(X_train)):
-    x_train.append(x_train_scaled[i-100:i,1])
+for i in range(60,len(X_train)):
+    x_train.append(x_train_scaled[i-60:i,1])
     y_train.append(x_train_scaled[i,1])
 
 x_train = np.array(x_train)
 y_train = np.array(y_train)
 
 #Testing dataset
-window_size = 100
+window_size = 60
 #scaled_X_test, scaled_X_train both in array
 temp = np.concatenate((x_train_scaled, x_test_scaled))
 length_window = window_size+len(x_test_scaled)
@@ -147,8 +149,8 @@ x_test = np.expand_dims(x_test, axis=-1)
 input_dim = x_train.shape[1]
 
 model = Sequential()
-model.add(Dense(128, activation='tanh', 
-                input_shape=[100]))
+model.add(Dense(128, activation='relu', 
+                input_shape=[60,1]))
 model.add(Dropout(0.2))
 model.add(BatchNormalization())
 model.add(Dense(128))
@@ -192,14 +194,16 @@ plt.plot(hist.history['val_mse'])
 plt.show()
 
 
-
 #%%
-y_pred = model.predict(x_test)
+
+predicted = []
+for i in x_test:
+    predicted.append(np.array(model.predict(i)))
 y_true = y_test
 
-print(classification_report(y_true,y_pred))
-print(confusion_matrix(y_true,y_pred))
-print(accuracy_score(y_true,y_pred))
+print(classification_report(y_true,predicted))
+print(confusion_matrix(y_true,predicted))
+print(accuracy_score(y_true,predicted))
 
 
 #%% model deployment
